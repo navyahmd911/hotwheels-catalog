@@ -1,0 +1,68 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Series {
+  id         Int       @id @default(autoincrement())
+  nama       String    @db.VarChar(100)
+  tahun      Int?
+  deskripsi  String?   @db.Text
+  cover_img  String?   @db.VarChar(255)
+  created_at DateTime  @default(now())
+  produk     Produk[]
+
+  @@map("series")
+}
+
+model Produk {
+  id          Int            @id @default(autoincrement())
+  series_id   Int?
+  nama        String         @db.VarChar(150)
+  nomor_seri  String?        @db.VarChar(50)
+  warna       String?        @db.VarChar(80)
+  skala       String?        @default("1:64") @db.VarChar(20)
+  negara_asal String?        @db.VarChar(80)
+  harga       Decimal?       @default(0) @db.Decimal(12, 2)
+  stok        Int?           @default(0)
+  tersedia    Boolean?       @default(true)
+  deskripsi   String?        @db.Text
+  created_at  DateTime       @default(now())
+  series      Series?        @relation(fields: [series_id], references: [id])
+  gambar      ProdukGambar[]
+  tags        ProdukTag[]
+
+  @@map("produk")
+}
+
+model ProdukGambar {
+  id        Int     @id @default(autoincrement())
+  produk_id Int
+  url       String  @db.VarChar(255)
+  is_cover  Boolean @default(false)
+  produk    Produk  @relation(fields: [produk_id], references: [id], onDelete: Cascade)
+
+  @@map("produk_gambar")
+}
+
+model Tag {
+  id     Int         @id @default(autoincrement())
+  nama   String      @unique @db.VarChar(60)
+  produk ProdukTag[]
+
+  @@map("tag")
+}
+
+model ProdukTag {
+  produk_id Int
+  tag_id    Int
+  produk    Produk @relation(fields: [produk_id], references: [id], onDelete: Cascade)
+  tag       Tag    @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([produk_id, tag_id])
+  @@map("produk_tag")
+}
