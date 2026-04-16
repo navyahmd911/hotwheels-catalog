@@ -18,6 +18,10 @@ Website katalog koleksi Hotwheels modern berbasis Next.js dengan tampilan respon
 ### Product Dashboard
 ![Product Dashboard](./public/Screenshot/Dashboard.png)
 
+## Preview Website
+
+![Preview Website](./public/Screenshot/view.png)
+
 ---
 
 ## Fitur Utama
